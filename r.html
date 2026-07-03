@@ -180,10 +180,14 @@
     }
 
     // In-app browsers (Discord, Instagram…) show this page instead of
-    // deep-linking into Flamme. This button is the escape hatch: flamme://
-    // is Flamme's private address scheme, which works from any browser.
-    // Same fragment, same recipe — the app decodes it exactly like we did.
-    document.getElementById('open-app-link').href = 'flamme://r' + location.hash;
+    // deep-linking into Flamme. This button is the escape hatch. A plain
+    // flamme:// address gets IGNORED by those browsers, so we use Android's
+    // intent:// format, which they respect. intent:// reserves the #fragment
+    // for itself, so the recipe payload rides along as ?d= — the app accepts
+    // both spellings.
+    document.getElementById('open-app-link').href =
+      'intent://r?d=' + fragment +
+      '#Intent;scheme=flamme;package=com.hearthsideworks.flamme;end';
     show('open-app');
 
     show('recipe');
