@@ -27,10 +27,19 @@
   .pitch p { color: #C9C9C9; margin: 8px 0 0; }
   .error { text-align: center; margin-top: 60px; color: #C9C9C9; }
   .hidden { display: none; }
+  .open-app { text-align: center; margin: 0 0 28px; }
+  .open-app a { display: inline-block; background: #F4F4F4; color: #0B0B0B; text-decoration: none;
+                font-weight: bold; padding: 12px 28px; border-radius: 999px; }
+  .open-app-hint { font-size: 0.85rem; color: #A9A9A9; margin-top: 8px; }
 </style>
 </head>
 <body>
 <p class="brand">Shared with <b>Flamme</b></p>
+
+<div id="open-app" class="open-app hidden">
+  <a id="open-app-link" href="#">&#9654;&#xFE0E;&nbsp; Open in the Flamme app</a>
+  <p class="open-app-hint">Adds this recipe to your recipe box (needs Flamme installed)</p>
+</div>
 
 <div id="recipe" class="hidden">
   <img id="photo" alt="">
@@ -169,6 +178,13 @@
       srcP.appendChild(a);
       show('source');
     }
+
+    // In-app browsers (Discord, Instagram…) show this page instead of
+    // deep-linking into Flamme. This button is the escape hatch: flamme://
+    // is Flamme's private address scheme, which works from any browser.
+    // Same fragment, same recipe — the app decodes it exactly like we did.
+    document.getElementById('open-app-link').href = 'flamme://r' + location.hash;
+    show('open-app');
 
     show('recipe');
   }
