@@ -180,14 +180,22 @@
     }
 
     // In-app browsers (Discord, Instagram…) show this page instead of
-    // deep-linking into Flamme. This button is the escape hatch. A plain
-    // flamme:// address gets IGNORED by those browsers, so we use Android's
-    // intent:// format, which they respect. intent:// reserves the #fragment
-    // for itself, so the recipe payload rides along as ?d= — the app accepts
-    // both spellings.
+    // deep-linking into Flamme. This button is the escape hatch, in Android's
+    // intent:// format (plain flamme:// gets ignored by in-app browsers).
+    // Hard-won details, learned on Ruben's phone:
+    //   • scheme=https, NOT a custom scheme — Android's package-visibility
+    //     rules hide custom-scheme handlers from other apps (Discord "sees"
+    //     no Flamme → bounced to a dead Play Store page), but every browser
+    //     app is allowed to see https handlers. The explicit package= makes
+    //     Android open Flamme itself, even when link verification is off.
+    //   • the payload rides as ?d= (intent:// reserves the #fragment) — the
+    //     app accepts both spellings.
+    //   • browser_fallback_url returns no-Flamme users to this page instead
+    //     of the Play Store (Flamme isn't published there yet).
     document.getElementById('open-app-link').href =
-      'intent://r?d=' + fragment +
-      '#Intent;scheme=flamme;package=com.hearthsideworks.flamme;end';
+      'intent://hearthsideworks-creator.github.io/r?d=' + fragment +
+      '#Intent;scheme=https;package=com.hearthsideworks.flamme' +
+      ';S.browser_fallback_url=' + encodeURIComponent(location.href) + ';end';
     show('open-app');
 
     show('recipe');
